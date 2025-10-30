@@ -1,0 +1,123 @@
+-- Q1. --> List all books published after 2015 along with their authors' names.
+
+-- SELECT books.title, books.author_id, authors.author_name, books.date_of_publication
+-- FROM books
+-- JOIN authors
+-- ON books.author_id = authors.author_id
+-- WHERE
+--  EXTRACT (YEAR FROM books.date_of_publication) > 2015
+
+---Q2.--> Find all members who joined in the last 2 years and have a 'Premium' membership.
+-- SELECT members.member_id, members.member_name, members.date_of_membership, members.type_of_membership
+-- FROM members
+-- WHERE members.date_of_membership > '2021-12-31' and members.type_of_membership = 'premium'
+
+--Q3.--> Display the total number of books written by each author, ordered by count (descending).
+-- SELECT authors.author_id, authors.author_name, authors.number_of_books_written
+-- FROM authors
+-- ORDER BY number_of_books_written DESC;
+
+-- -Q4.--> Show all currently borrowed books (books with no return date) along with the member's name and borrow date.
+-- SELECT books.book_id, books.title, borrow_history.borrow_date,
+-- members.member_name, borrow_history.member_id, borrow_history.return_date
+-- FROM borrow_history
+-- JOIN books
+-- ON books.book_id = borrow_history.book_id
+-- JOIN members
+-- ON members.member_id = borrow_history.member_id
+-- WHERE borrow_history.return_date IS NULL;
+
+-- ---Q5.--> List all library staff members working in the 'Circulation' department.
+SELECT * FROM librarystaff
+JOIN departments
+ON departments.dept_id = librarystaff.dept_id
+WHERE department_name = 'Circulation'
+-- **Intermediate Queries **
+-- -Q6. --> Calculate the total cost of all book orders placed in 2024, grouped by fulfillment status.
+-- SELECT bookorders.fulfillment_status,
+-- SUM(cost) AS total_cost
+-- FROM bookorders
+-- WHERE
+--  EXTRACT (YEAR FROM bookorders.order_date) = 2024
+-- GROUP BY fulfillment_status
+-- ORDER BY total_cost DESC;
+-- -Q7. --> Find the top 5 most borrowed books along with the number of times each has been borrowed.
+-- SELECT books.title, books.book_id,
+-- COUNT(borrowedhistory.book_id) AS times_borrowed
+-- FROM borrowedhistory
+-- JOIN books
+-- ON books.book_id = borrowedhistory.book_id
+-- GROUP BY books.title, books.book_id
+-- ORDER BY times_borrowed DESC
+-- LIMIT 5;
+-- ---Q8. --> Identify members who have never borrowed a book.
+-- SELECT * FROM members
+-- LEFT JOIN borrowedhistory
+-- ON members.membership_id =  borrowedhistory.membership_id
+-- WHERE borrowedhistory.membership_id IS NULL;
+-- -Q9. --> Show the average number of available copies per genre.
+-- SELECT books.genre,
+-- ROUND(AVG(books.available_copies),2) AS avg_available_copies
+-- FROM books
+-- GROUP BY books.genre
+-- ORDER BY avg_available_copies ASC;
+-- -Q10. --> List all books that are currently overdue (borrowed more than 30 days ago with no return date).
+-- SELECT books.book_id, books.title, members.member_name, borrowedhistory.borrow_date, borrowedhistory.return_date
+-- FROM borrowedhistory
+-- JOIN books
+-- ON borrowedhistory.book_id = books.book_id
+-- JOIN members
+-- ON borrowedhistory.membership_id = members.membership_id
+-- WHERE borrowedhistory.return_date IS NULL
+-- AND borrowedhistory.borrow_date < DATE '2024-03-30' - INTERVAL '30 days'
+-- ORDER BY
+-- borrowedhistory.borrow_date ASC;
+-- **Advanced Queries**
+-- Q11.--> Create a query that shows each department's staff count and the average tenure (years) of staff in that department.
+-- SELECT departments.department_name,
+-- COUNT(librarystaff.staff_id) AS staff_count,
+-- ROUND(AVG(EXTRACT(YEAR FROM AGE(CURRENT_DATE, librarystaff.hire_date))), 2) AS average_tenure_years
+-- FROM
+-- librarystaff
+-- JOIN departments
+-- ON librarystaff.dept_id = departments.dept_id
+-- GROUP BY departments.department_name
+-- ORDER BY staff_count DESC;
+-- Q12.--> Generate a report showing monthly borrowing trends for the past year (count of books borrowed per month).
+-- SELECT
+--  TO_CHAR(borrow_date, 'Month') AS month_name,
+--  EXTRACT(YEAR FROM borrow_date) AS YEAR,
+--  COUNT(*) AS total_borrowed_books
+-- FROM borrowedhistory
+-- GROUP BY
+--  YEAR, month_name, EXTRACT(MONTH FROM borrow_date)
+-- ORDER BY
+--  YEAR, EXTRACT(MONTH FROM borrow_date);
+-- Q13.-->  Find authors whose books have been borrowed more than 10 times in total, along with their most popular book.
+-- SELECT authors.author_name, books.title AS most_popular_book,
+-- COUNT(borrowedhistory.book_id) AS total_borrows
+-- FROM authors
+-- JOIN books
+-- ON books.authors_id = authors.authors_id
+-- JOIN borrowedhistory
+-- ON borrowedhistory.book_id = books.book_id
+-- GROUP BY authors.author_name, books.title
+-- HAVING COUNT(borrowedhistory.book_id) > 10
+-- ORDER BY total_borrows DESC;
+-- Q14.--> Calculate the total revenue from book orders per supplier, showing only suppliers with orders exceeding $5,000.
+-- SELECT bookorders.supplier_name,
+-- SUM(cost * quantity) AS total_revenue
+-- FROM bookorders
+-- GROUP BY supplier_name
+-- HAVING SUM(cost * quantity) > 5000
+-- ORDER BY total_revenue DESC;
+-- Q15.--> Create a complex query that identifies "inactive" members (those who haven't borrowed a book in the last 6 months)
+-- who have a Premium membership.
+-- SELECT members.type_of_membership, members.member_name, members.membership_id, members.status
+-- FROM members
+-- LEFT JOIN borrowedhistory
+-- ON borrowedhistory.membership_id = members.membership_id
+-- WHERE members.type_of_membership = 'premium'
+-- AND (borrowedhistory.borrow_date IS NULL OR borrowedhistory.borrow_date < DATE '2024-03-30' - INTERVAL '6 months')
+-- GROUP BY members.type_of_membership, members.member_name, members.membership_id, members.status
+
