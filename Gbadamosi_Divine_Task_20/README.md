@@ -1,6 +1,6 @@
 # Library Database Management — Setup and Run Guide
 
-This foldercontains a Library Database Management assignment with SQL scripts, Python helpers, and Jupyter notebooks for analysis and visualization.
+This folder contains a Library Database Management assignment with SQL scripts, Python helpers, and Jupyter notebooks for analysis and visualization.
 
 This README explains how to set up the environment, install dependencies, create the PostgreSQL database and tables, load data, run the Python scripts, and open the notebooks on Windows (PowerShell). Commands in the "Try it" sections are written for PowerShell.
 
