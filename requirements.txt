@@ -42,3 +42,4 @@ pipenv
 xgboost
 lightgbm
 shap
+scipy
