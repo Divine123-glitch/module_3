@@ -1,8 +1,8 @@
 feature,correlation
-ApplicantIncome,0.06434401464125224
-Total_Income,0.049707945173700294
-ApplicantIncome_log,0.027668075767095675
-LoanAmount_log,0.0230528734095391
-CoapplicantIncome_log,0.016469782142296923
-CoapplicantIncome,0.01261327421522839
-LoanAmount,0.006521069831305566
+ApplicantIncome,
+CoapplicantIncome,
+LoanAmount,
+ApplicantIncome_log,
+CoapplicantIncome_log,
+LoanAmount_log,
+Total_Income,
